@@ -2,27 +2,32 @@ Alfresco Explorer
 =========
 The legacy JSF UI for Alfresco Community Edition.
 
-This was extracted from 5.0.b, and is not currently in a buildable state because
-it still depends on being in the same WAR as Alfresco Explorer.
+Alfresco stopped enhancing the legacy JSF Explorer UI with the release of Alfresco
+Share in 3.0. With the release of AlfrescoOne 5.0 (and Community Edition 5.0.b), the Explorer interface was removed.
 
-Does not currently run on 5.0.c and needs additional changes.
+This was extracted from 5.0.a, and is not currently in a buildable state.
+
+Without additional changes, it will not run on versions of Alfresco newer than
+5.0.a, including Alfresco Enterprise Edition 5.0.0.
 
 Limitations
 ------------
-Alfresco stopped enhancing the legacy JSF Explorer UI with the release of Alfresco
-Share in 3.0. With the release of AlfrescoOne 5.0 (and Community Edition 5.0.c), the Explorer interface was removed.
-
 The Explorer interface used a variety of internal undocumented APIs. With the
 removal of the Explorer interface, those APIs are likely to change. The legacy
 Explorer needs to be adapted to use services that are part of the documented API
 to meet those needs.
 
-Areas of likely breakage:
+Areas of likely future breakage (5.1 or beyond)
 * Authentication and single sign-on
+
+Notes
+-----
+* Removed the AVM related UI tests
 
 TODO
 ----
-* Package Alfresco Explorer as an AMP using Maven, to be deployed within the 4.2.c
-  Alfresco WAR
-* Get the Explorer AMP to run against 5.0.c.
+* Remove references to deprecated modules:
+  http://wiki.alfresco.com/wiki/Alfresco_Community_5.0.b_Release_Notes
+* Package Alfresco Explorer as an AMP using Maven, to be deployed within the
+  5.0.c Alfresco WAR
 * List on addons.alfresco.com
