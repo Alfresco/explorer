@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.alfresco</groupId>
+	<artifactId>explorer</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Alfresco Explorer</name>
+	<description>A legacy build of the Alfresco Explorer web interface.</description>
+
+	<properties>
+		<alfresco.sdk.version>3.0.0</alfresco.sdk.version>
+		<alfresco.groupId>org.alfresco</alfresco.groupId>
+		<maven.alfresco.edition>community</maven.alfresco.edition>
+		
+		<alfresco.platform.version>5.0.d</alfresco.platform.version>
+		<alfresco.platform.version.min>5.0</alfresco.platform.version.min>
+		<alfresco.platform.version.max>5.2.999999</alfresco.platform.version.max>
+		
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${alfresco.groupId}</groupId>
+				<artifactId>alfresco-platform-distribution</artifactId>
+				<version>${alfresco.platform.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+		<!-- Alfresco already has these libraries, so they are "provided" -->
+		<dependency>
+			<groupId>${alfresco.groupId}</groupId>
+			<artifactId>alfresco-repository</artifactId>
+			<version>${alfresco.platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${alfresco.groupId}</groupId>
+			<artifactId>alfresco-remote-api</artifactId>
+			<version>${alfresco.platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${alfresco.groupId}</groupId>
+			<artifactId>alfresco-data-model</artifactId>
+			<version>${alfresco.platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Tomcat/Jetty already have these libraries, so they are "provided" -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>alfresco-public</id>
+			<name>Alfresco Public Releases</name>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<build>
+		<sourceDirectory>source/java</sourceDirectory>
+		<testSourceDirectory>source/test-java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>source/test-resources</directory>
+			</testResource>
+		</testResources>
+		
+	   	<pluginManagement>
+	   		<plugins>
+	   			<plugin>
+	   				<groupId>org.apache.maven.plugins</groupId>
+	   				<artifactId>maven-assembly-plugin</artifactId>
+	   				<version>2.6</version>
+	   				<executions>
+	   					<execution>
+	   						<id>build-amp-file</id>
+	   						<phase>package</phase>
+	   						<goals><goal>single</goal></goals>
+	   						<configuration>
+	   							<appendAssemblyId>true</appendAssemblyId>
+	   							<descriptor>src/main/assembly/amp.xml</descriptor>
+	   						</configuration>
+	   					</execution>
+	   				</executions>
+	   				<dependencies>
+	   					<dependency>
+	   						<groupId>org.alfresco.maven.plugin</groupId>
+	   						<artifactId>alfresco-maven-plugin</artifactId>
+	   						<version>${alfresco.sdk.version}</version>
+	   					</dependency>
+	   				</dependencies>
+	   			</plugin>
+	   		</plugins>
+	   	</pluginManagement>
+	   	
+	   	<resources>
+			<resource>
+				<directory>config</directory>
+				<filtering>true</filtering>
+			</resource>
+	   	</resources>
+	   	
+	   	<plugins>
+   			<plugin>
+   				<groupId>org.apache.maven.plugins</groupId>
+   				<artifactId>maven-assembly-plugin</artifactId>
+   			</plugin>
+	   	</plugins>
+	</build>
+	
+</project>
