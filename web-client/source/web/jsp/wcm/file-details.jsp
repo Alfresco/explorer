@@ -41,16 +41,6 @@
       </a:panel>
 
       <f:verbatim><div style="padding: 4px"></div></f:verbatim>
-
-      <h:panelGroup id="props-panel-facets">
-         <f:facet name="title">
-            <r:permissionEvaluator id="eval1" value="#{DialogManager.bean.document}" allow="Write">
-               <r:actionInstanceEvaluator id="acEv1" value="#{DialogManager.bean.avmNode}" evaluatorClassName="org.alfresco.web.action.evaluator.WCMWorkflowEvaluator">
-                  <a:actionLink id="titleLink1" value="#{msg.modify}" showLink="false" image="/images/icons/Change_details.gif" action="dialog:editAvmFileProperties" />
-               </r:actionInstanceEvaluator>
-            </r:permissionEvaluator>
-         </f:facet>
-      </h:panelGroup> 
       
       <a:panel label="#{msg.properties}" id="properties-panel" facetsId="dialog:dialog-body:props-panel-facets" progressive="true" border="white" bgcolor="white" titleBorder="lbgrey" expandedTitleBorder="dotted" titleBgcolor="white" expanded='#{DialogManager.bean.panels["properties-panel"]}'
          expandedActionListener="#{DialogManager.bean.expandPanel}"><f:verbatim>
@@ -114,14 +104,6 @@
                </f:facet>
                <a:actionLink id="view-link" value="#{msg.view}" href="#{r.url}" target="new" image="#{r.fileType16}" style="padding-right:8px" />
                
-               <r:permissionEvaluator id="eval2" value="#{DialogManager.bean.avmNode}" allow="Write">
-                  <r:actionInstanceEvaluator id="acEv2" value="#{DialogManager.bean.avmNode}" evaluatorClassName="org.alfresco.web.action.evaluator.WCMWorkflowEvaluator">
-                     <a:actionLink id="revert-link" value="#{msg.revert}" actionListener="#{DialogManager.bean.revertNode}" action="dialog:close" image="/images/icons/revert.gif">
-                        <f:param name="version" value="#{r.strVersion}" />
-                     </a:actionLink>
-                  </r:actionInstanceEvaluator>
-               </r:permissionEvaluator>
-               
             </a:column>
 
             <a:dataPager id="pager" styleClass="pager" />
@@ -134,7 +116,7 @@
       <%-- Document Actions --%> 
       <a:panel label="#{msg.actions}" id="actions-panel" border="white" bgcolor="white" titleBorder="lbgrey" expandedTitleBorder="dotted" titleBgcolor="white" style="text-align:center" progressive="true" expanded='#{DialogManager.bean.panels["actions-panel"]}'
          expandedActionListener="#{DialogManager.bean.expandPanel}">
-         <r:actions id="actions_doc" value="avm_file_details" context="#{FileDetailsBean.avmNode}" verticalSpacing="3" style="white-space:nowrap" />
+         <r:actions id="actions_doc" value="file_details" context="#{FileDetailsBean.document}" verticalSpacing="3" style="white-space:nowrap" />
       </a:panel><f:verbatim>
       </td>
    </tr>

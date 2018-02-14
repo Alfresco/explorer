@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 
 import org.alfresco.service.cmr.security.PermissionService;
+import org.alfresco.web.bean.BrowseBean;
 import org.alfresco.web.bean.dialog.BaseDialogBean;
 import org.alfresco.web.bean.repository.Repository;
 
@@ -38,7 +39,7 @@ public class BasePermissionsDialog extends BaseDialogBean
 
     /** PermissionService bean reference */
     transient protected PermissionService permissionService;
-    private AVMBrowseBean avmBrowseBean;
+    private BrowseBean browseBean;
 
     /*
      * (non-Javadoc)
@@ -87,21 +88,21 @@ public class BasePermissionsDialog extends BaseDialogBean
     }
 
     /**
-     * Getter for avmBrowseBean
+     * Getter for browseBean
      * 
-     * @return avmBrowseBean
+     * @return browseBean
      */
-    public AVMBrowseBean getAvmBrowseBean()
+    public BrowseBean getBrowseBean()
     {
-        return avmBrowseBean;
+        return browseBean;
     }
 
     /**
-     * @param avmBrowseBean The avmBrowseBean to set.
+     * @param browseBean The browseBean to set.
      */
-    public void setAvmBrowseBean(final AVMBrowseBean avmBrowseBean)
+    public void setBrowseBean(final BrowseBean browseBean)
     {
-        this.avmBrowseBean = avmBrowseBean;
+        this.browseBean = browseBean;
     }
 
 }

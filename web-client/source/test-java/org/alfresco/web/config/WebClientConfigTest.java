@@ -35,6 +35,7 @@ import org.alfresco.web.config.WizardsConfigElement.ConditionalPageConfig;
 import org.alfresco.web.config.WizardsConfigElement.PageConfig;
 import org.alfresco.web.config.WizardsConfigElement.StepConfig;
 import org.alfresco.web.config.WizardsConfigElement.WizardConfig;
+import org.junit.Before;
 import org.springframework.extensions.config.Config;
 import org.springframework.extensions.config.ConfigElement;
 import org.springframework.extensions.config.ConfigException;
@@ -55,9 +56,9 @@ public class WebClientConfigTest extends BaseTest
    /**
     * @see junit.framework.TestCase#setUp()
     */
+   @Before
    protected void setUp() throws Exception
    {
-      super.setUp();
    }
 
    /**
@@ -122,15 +123,14 @@ public class WebClientConfigTest extends BaseTest
          // expected
       } 
    }
-
    
    @Override
-    public String getResourcesDir()
-    {
-        return CLASSPATH_RESOURCE;
-    }
+   public String getResourcesDir()
+   {
+      return CLASSPATH_RESOURCE;
+   }
 
-public void testPropertyViewing()
+   public void testPropertyViewing()
    {
       XMLConfigService svc = initXMLConfigService(TEST_CONFIG);
       

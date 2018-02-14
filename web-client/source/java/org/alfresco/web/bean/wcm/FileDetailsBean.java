@@ -18,11 +18,9 @@
  */
 package org.alfresco.web.bean.wcm;
 
-import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -30,27 +28,26 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.transaction.UserTransaction;
 
-import org.alfresco.repo.avm.AVMNodeConverter;
-import org.alfresco.repo.avm.actions.AVMRevertToVersionAction;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.web.scripts.FileTypeImageUtils;
-import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ActionService;
-import org.alfresco.service.cmr.avm.AVMNodeDescriptor;
-import org.alfresco.util.Pair;
 import org.alfresco.web.app.Application;
 import org.alfresco.web.app.servlet.DownloadContentServlet;
+import org.alfresco.web.bean.dialog.BaseDialogBean;
+import org.alfresco.web.bean.dialog.NavigationSupport;
 import org.alfresco.web.bean.repository.Node;
 import org.alfresco.web.bean.repository.Repository;
+import org.alfresco.web.ui.common.NodeListUtils;
+import org.alfresco.web.ui.common.NodePropertyComparator;
 import org.alfresco.web.ui.common.Utils;
 import org.alfresco.web.ui.common.component.UIActionLink;
-import org.alfresco.web.ui.common.component.data.UIRichList;
 
 /**
  * Backing bean for File Details page.
  * 
  * @author Kevin Roast
  */
-public class FileDetailsBean extends AVMDetailsBean
+public class FileDetailsBean extends BaseDialogBean implements NavigationSupport
 {
    private static final long serialVersionUID = -3263315503769148385L;
    
@@ -59,21 +56,6 @@ public class FileDetailsBean extends AVMDetailsBean
    
    private final static String MSG_LEFT_QUOTE = "left_qoute";
    private final static String MSG_RIGHT_QUOTE = "right_quote";
-   
-   
-   // ------------------------------------------------------------------------------
-   // Construction 
-   
-   /**
-    * Default constructor
-    */
-   public FileDetailsBean()
-   {
-      super();
-      
-      // initial state of some panels that don't use the default
-      panels.put("version-history-panel", false);
-   }
    
    
    // ------------------------------------------------------------------------------
@@ -97,20 +79,11 @@ public class FileDetailsBean extends AVMDetailsBean
    }
    
    /**
-    * @see org.alfresco.web.bean.wcm.AVMDetailsBean#getAvmNode()
-    */
-   @Override
-   public AVMNode getAvmNode()
-   {
-      return this.avmBrowseBean.getAvmActionNode();
-   }
-   
-   /**
     * @return a Node wrapper of the AVM File Node - for property sheet support
     */
    public Node getDocument()
    {
-      return new Node(getAvmNode().getNodeRef());
+	   return this.browseBean.getActionSpace();
    }
    
    /**
@@ -120,7 +93,7 @@ public class FileDetailsBean extends AVMDetailsBean
     */
    public String getBrowserUrl()
    {
-      return DownloadContentServlet.generateBrowserURL(getAvmNode().getNodeRef(), getAvmNode().getName());
+      return DownloadContentServlet.generateBrowserURL(getDocument().getNodeRef(), getDocument().getName());
    }
 
    /**
@@ -130,17 +103,7 @@ public class FileDetailsBean extends AVMDetailsBean
     */
    public String getDownloadUrl()
    {
-      return DownloadContentServlet.generateDownloadURL(getAvmNode().getNodeRef(), getAvmNode().getName());
-   }
-   
-   /**
-    * Returns the virtualisation server URL to the content for the current document
-    *  
-    * @return Preview url for the current document
-    */
-   public String getPreviewUrl()
-   {
-      return AVMUtil.getPreviewURI(getAvmNode().getPath());
+      return DownloadContentServlet.generateDownloadURL(getDocument().getNodeRef(), getDocument().getName());
    }
    
    /**
@@ -148,16 +111,7 @@ public class FileDetailsBean extends AVMDetailsBean
     */
    public String getFileType32()
    {
-      return FileTypeImageUtils.getFileTypeImage(getAvmNode().getName(), false);
-   }
-
-   /**
-    * @see org.alfresco.web.bean.wcm.AVMDetailsBean#getNodes()
-    */
-   @Override
-   protected List<AVMNode> getNodes()
-   {
-      return (List)this.avmBrowseBean.getFiles();
+      return FileTypeImageUtils.getFileTypeImage(getDocument().getName(), false);
    }
    
    /**
@@ -165,26 +119,8 @@ public class FileDetailsBean extends AVMDetailsBean
     */
    public List<Map<String, Object>> getVersionHistory()
    {
-      AVMNode avmNode = getAvmNode();
-      List<AVMNodeDescriptor> history = this.getAvmService().getHistory(avmNode.getDescriptor(), -1);
-      List<Map<String, Object>> wrappers = new ArrayList<Map<String, Object>>(history.size());
-      for (AVMNodeDescriptor record : history)
-      {
-         Map<String, Object> wrapper = new HashMap<String, Object>(8, 1.0f);
-         
-         wrapper.put("version", record.getVersionID());
-         wrapper.put("strVersion", Integer.toString(record.getVersionID()));
-         wrapper.put("modifiedDate", new Date(record.getModDate()));
-         Pair<Integer, String> path = this.getAvmService().getAPath(record);
-         if (path != null)
-         {
-            wrapper.put("url", DownloadContentServlet.generateBrowserURL(
-                        AVMNodeConverter.ToNodeRef(path.getFirst(), path.getSecond()), avmNode.getName()));
-         }
-         wrapper.put("fileType16", FileTypeImageUtils.getFileTypeImage(avmNode.getName(), true));
-         
-         wrappers.add(wrapper);
-      }
+       // FIXME use VersionService
+      List<Map<String, Object>> wrappers = new ArrayList<Map<String, Object>>(0);
       return wrappers;
    }
    
@@ -204,28 +140,7 @@ public class FileDetailsBean extends AVMDetailsBean
          tx = Repository.getUserTransaction(context, false);
          tx.begin();
          
-         Map<String, Serializable> args = new HashMap<String, Serializable>(1, 1.0f);
-         List<AVMNodeDescriptor> history = this.getAvmService().getHistory(getAvmNode().getDescriptor(), -1);
-         // the history list should contain the version ID we are looking for
-         for (AVMNodeDescriptor record : history)
-         {
-            if (record.getVersionID() == version)
-            {
-               // the action expects the HEAD revision as the noderef and
-               // the to-revert param as the previous version to revert to
-               Action action = this.getActionService().createAction(AVMRevertToVersionAction.NAME, args);
-               args.put(AVMRevertToVersionAction.TOREVERT, record);
-               this.getActionService().executeAction(action, getAvmNode().getNodeRef());
-               
-               // clear the version history list after a revert ready for refresh
-               UIRichList versionList = (UIRichList)link.findComponent("version-history-list");
-               versionList.setValue(null);
-               
-               // reset the action node reference as the version ID has changed
-               avmBrowseBean.setAvmActionNode(new AVMNode(getAvmService().lookup(-1, getAvmNode().getPath())));
-               break;
-            }
-         }
+         // FIXME revert using VersionService
          
          tx.commit();
       }
@@ -253,23 +168,92 @@ public class FileDetailsBean extends AVMDetailsBean
    public String getContainerTitle()
    {
        FacesContext fc = FacesContext.getCurrentInstance();      
-       return Application.getMessage(fc, "details_of") + " " + Application.getMessage(fc, MSG_LEFT_QUOTE) + getName() + Application.getMessage(fc, MSG_RIGHT_QUOTE);
+       return Application.getMessage(fc, "details_of") + " " + Application.getMessage(fc, MSG_LEFT_QUOTE) + getDocument().getName() + Application.getMessage(fc, MSG_RIGHT_QUOTE);
    }
    
    public String getCurrentItemId()
    {
-      return getAvmNode().getId();
+      return getDocument().getId();
    }
 
    public String getOutcome()
    {
-      if ( getAvmNode() != null && AVMUtil.isWorkflowStore(AVMUtil.getStoreName(getAvmNode().getPath())) )
+      return "dialog:close:dialog:showFileDetails";
+   }
+   
+   /**
+    * Navigates to next item in the list of items for the current folder
+    */
+   public void nextItem(ActionEvent event)
+   {
+      UIActionLink link = (UIActionLink)event.getComponent();
+      Map<String, String> params = link.getParameterMap();
+      String path = params.get("id");
+      if (path != null && path.length() != 0)
       {
-          return "dialog:close:dialog:workflowShowFileDetails";
+         this.browseBean.setupContentAction(getCurrentItemId(), false);
+         List<Node> nodes = this.browseBean.getNodes();
+         if (nodes.size() > 1)
+         {
+            String currentSortColumn;
+            boolean currentSortDescending;
+            if (nodes.get(0).hasProperty(ContentModel.PROP_CONTENT.toPrefixString(this.getNamespaceService())))
+            {
+               currentSortColumn = this.browseBean.getContentRichList().getCurrentSortColumn();
+               currentSortDescending = this.browseBean.getContentRichList().isCurrentSortDescending();
+            }
+            else
+            {
+               currentSortColumn = this.browseBean.getSpacesRichList().getCurrentSortColumn();
+               currentSortDescending = this.browseBean.getSpacesRichList().isCurrentSortDescending();
+            }
+
+            if (currentSortColumn != null)
+            {
+               Collections.sort(nodes, new NodePropertyComparator(currentSortColumn, !currentSortDescending));
+            }
+                  
+            Node next = NodeListUtils.nextItem(nodes, path);
+            this.browseBean.setupContentAction(next.getPath(), false);
+         }
       }
-      else
+   }
+   
+   /**
+    * Navigates to the previous item in the list of items for the current folder
+    */
+   public void previousItem(ActionEvent event)
+   {
+      UIActionLink link = (UIActionLink)event.getComponent();
+      Map<String, String> params = link.getParameterMap();
+      String path = params.get("id");
+      if (path != null && path.length() != 0)
       {
-          return "dialog:close:dialog:showFileDetails";
+         this.browseBean.setupContentAction(getCurrentItemId(), false);
+         List<Node> nodes = this.browseBean.getNodes();
+         if (nodes.size() > 1)
+         {
+            String currentSortColumn;
+            boolean currentSortDescending;
+            if (nodes.get(0).hasProperty(ContentModel.PROP_CONTENT.toPrefixString(this.getNamespaceService())))
+            {
+               currentSortColumn = this.browseBean.getContentRichList().getCurrentSortColumn();
+               currentSortDescending = this.browseBean.getContentRichList().isCurrentSortDescending();
+            }
+            else
+            {
+               currentSortColumn = this.browseBean.getSpacesRichList().getCurrentSortColumn();
+               currentSortDescending = this.browseBean.getSpacesRichList().isCurrentSortDescending();
+            }
+
+            if (currentSortColumn != null)
+            {
+               Collections.sort(nodes, new NodePropertyComparator(currentSortColumn, !currentSortDescending));
+            }
+                  
+            Node previous = NodeListUtils.previousItem(nodes, path);
+            this.browseBean.setupContentAction(previous.getPath(), false);
+         }
       }
    }
 }

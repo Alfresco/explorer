@@ -330,10 +330,6 @@ public class ClipboardBean implements Serializable
       {
          item = new WorkspaceClipboardItem(ref, parent, mode, customPasteViewIds);
       }
-      else if (StoreRef.PROTOCOL_AVM.equals(ref.getStoreRef().getProtocol()))
-      {
-         item = new AVMClipboardItem(ref, mode, customPasteViewIds);
-      }
       else
       {
          logger.warn("Unable to add item to clipboard - unknown store protocol: " + ref.getStoreRef().getProtocol());

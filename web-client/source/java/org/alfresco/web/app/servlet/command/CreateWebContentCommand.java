@@ -18,7 +18,6 @@
  */
 package org.alfresco.web.app.servlet.command;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +29,11 @@ import javax.servlet.ServletResponse;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.ServiceRegistry;
-import org.springframework.extensions.surf.util.ParameterCheck;
 import org.alfresco.web.app.servlet.BaseServlet;
 import org.alfresco.web.app.servlet.FacesHelper;
 import org.alfresco.web.bean.NavigationBean;
-import org.alfresco.web.bean.wcm.AVMBrowseBean;
 import org.alfresco.web.bean.wizard.WizardManager;
-import org.alfresco.web.ui.wcm.component.UIUserSandboxes;
+import org.springframework.extensions.surf.util.ParameterCheck;
 
 /**
  * Command to execute the Create Web Content wizard via url.
@@ -65,7 +62,6 @@ public class CreateWebContentCommand extends BaseUIActionCommand
       ServletRequest req = (ServletRequest)properties.get(PROP_REQUEST);
       ServletResponse res = (ServletResponse)properties.get(PROP_RESPONSE);
       FacesContext fc = FacesHelper.getFacesContext(req, res, sc);
-      AVMBrowseBean avmBrowseBean = (AVMBrowseBean)FacesHelper.getManagedBean(fc, AVMBrowseBean.BEAN_NAME);
       NavigationBean navigator = (NavigationBean)FacesHelper.getManagedBean(fc, NavigationBean.BEAN_NAME);
       
       // setup context from url args in properties map
@@ -74,7 +70,6 @@ public class CreateWebContentCommand extends BaseUIActionCommand
       String sandbox = (String)properties.get(PROP_SANDBOX);
       ParameterCheck.mandatoryString(PROP_SANDBOX, sandbox);
       navigator.setCurrentNodeId(webProjectId);
-      avmBrowseBean.setSandbox(sandbox);
       
       // form name is optional, but if set we need to init the wizard manager with params
       String formName = (String)properties.get(PROP_FORMNAME);
@@ -82,12 +77,12 @@ public class CreateWebContentCommand extends BaseUIActionCommand
       {
          WizardManager manager = (WizardManager)FacesHelper.getManagedBean(fc, WizardManager.BEAN_NAME);
          Map<String, String> params = new HashMap<String, String>(1, 1.0f);
-         params.put(UIUserSandboxes.PARAM_FORM_NAME, formName);
+         params.put("form-name", formName);
          manager.setupParameters(params);
       }
       
       NavigationHandler navigationHandler = fc.getApplication().getNavigationHandler();
-      navigationHandler.handleNavigation(fc, null, "wizard:createWebContent");
+      // FIXME navigationHandler.handleNavigation(fc, null, "wizard:createWebContent");
       String viewId = fc.getViewRoot().getViewId();
       try
       {

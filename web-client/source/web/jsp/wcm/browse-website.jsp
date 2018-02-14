@@ -186,7 +186,6 @@
                                        </tr>
                                     </table>
                                     <div style='padding:2px'></div>
-                                    <w:sandboxSnapshots id="snapshots" value="#{AVMBrowseBean.stagingStore}" dateFilter="#{AVMBrowseBean.snapshotDateFilter}" />
                                  </div>
                                  </a:panel>
                               </td>
@@ -194,13 +193,6 @@
                            <tr>
                               <td></td>
                               <td colspan=2>
-                                 <a:panel id="pending-submission-panel" rendered="#{AVMBrowseBean.isManagerRole}" label="#{msg.pending_submissions}"
-                                       progressive="true" expanded="false" styleClass="mainSubTitle">
-                                    <div style='padding-left:16px;padding-top:8px;padding-bottom:4px'>
-                                       <%-- Pending submission list --%>
-                                       <w:pendingSubmissions id="pending-submissions" value="#{AVMBrowseBean.stagingStore}" />
-                                    </div>
-                                 </a:panel>
                               </td>
                            </tr>
                         </table>
@@ -226,12 +218,6 @@
                            </h:panelGroup>
                         </f:facet>
                      </h:panelGroup>
-                     <a:panel id="sandboxes-panel" border="white" bgcolor="white" titleBorder="lbgrey" expandedTitleBorder="dotted" titleBgcolor="white" styleClass="mainSubTitle" facetsId="sandboxes-panel-facets" label="#{msg.user_sandboxes}">
-                        
-                        <%-- User Sandboxes List --%>
-                        <w:userSandboxes id="sandboxes" binding="#{AVMBrowseBean.userSandboxes}" value="#{AVMBrowseBean.website.nodeRef}" webapp="#{AVMBrowseBean.webapp}" />
-                        
-                     </a:panel>
                      
                   </td>
                   <td style="background-image: url(<%=request.getContextPath()%>/images/parts/whitepanel_6.gif)" width=4></td>

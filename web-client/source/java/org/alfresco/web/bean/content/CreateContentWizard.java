@@ -18,11 +18,8 @@
  */
 package org.alfresco.web.bean.content;
 
-import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -31,14 +28,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
-import org.springframework.extensions.config.Config;
-import org.springframework.extensions.config.ConfigElement;
-import org.springframework.extensions.config.ConfigService;
 import org.alfresco.model.ContentModel;
-import org.alfresco.model.WCMAppModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.model.FileExistsException;
-import org.alfresco.service.namespace.QName;
+import org.alfresco.util.XMLUtil;
 import org.alfresco.web.app.AlfrescoNavigationHandler;
 import org.alfresco.web.app.Application;
 import org.alfresco.web.app.servlet.FacesHelper;
@@ -46,15 +39,15 @@ import org.alfresco.web.bean.repository.Node;
 import org.alfresco.web.bean.repository.Repository;
 import org.alfresco.web.data.IDataContainer;
 import org.alfresco.web.data.QuickSort;
-import org.alfresco.web.forms.Form;
-import org.alfresco.web.forms.FormNotFoundException;
 import org.alfresco.web.forms.FormProcessor;
 import org.alfresco.web.forms.FormsService;
-import org.alfresco.util.XMLUtil;
 import org.alfresco.web.ui.common.Utils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.config.Config;
+import org.springframework.extensions.config.ConfigElement;
+import org.springframework.extensions.config.ConfigService;
 import org.w3c.dom.Document;
 
 /**
@@ -114,14 +107,6 @@ public class CreateContentWizard extends BaseContentWizard
       }
       
       String result = super.finish();
-      
-      if ((super.createdNode != null) && (this.instanceDataDocument != null))
-      {
-         final Map<QName, Serializable> props = new HashMap<QName, Serializable>(1, 1.0f);
-         props.put(WCMAppModel.PROP_PARENT_FORM_NAME, getFormName());
-         props.put(WCMAppModel.PROP_ORIGINAL_PARENT_PATH, "");
-         getNodeService().addAspect(super.createdNode, WCMAppModel.ASPECT_FORM_INSTANCE_DATA, props);
-      }
       
       return result;
    }
@@ -313,21 +298,6 @@ public class CreateContentWizard extends BaseContentWizard
                           getSummaryMimeType(this.mimeType)});
    }
    
-   /**
-    * @return List of UI items to represent the full list of available ECM Forms
-    */
-   public List<SelectItem> getFormsList()
-   {
-      Collection<Form> forms = this.getFormsService().getForms();
-      List<SelectItem> items = new ArrayList<SelectItem>(forms.size()+1);
-      items.add(new SelectItem("", ""));
-      for (Form form : forms)
-      {
-    	 items.add(new SelectItem(form.getName(), form.getTitle()));
-      }
-      return items;
-   }
-   
    public String getFormName()
    {
       return this.formName;
@@ -336,13 +306,6 @@ public class CreateContentWizard extends BaseContentWizard
    public void setFormName(String formName)
    {
       this.formName = formName;
-   }
-   
-   public Form getForm() throws FormNotFoundException
-   {
-      return (this.getFormName() != null 
-              ? getFormsService().getForm(formName)
-	      : null);
    }
 
    public FormProcessor.Session getFormProcessorSession()

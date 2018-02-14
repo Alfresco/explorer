@@ -79,7 +79,7 @@
       <%-- Document Actions --%> 
       <a:panel label="#{msg.actions}" id="actions-panel" border="white" bgcolor="white" titleBorder="lbgrey" expandedTitleBorder="dotted" titleBgcolor="white" style="text-align:center" progressive="true" expanded='#{FolderDetailsBean.panels["actions-panel"]}'
          expandedActionListener="#{FolderDetailsBean.expandPanel}">
-         <r:actions id="actions_doc" value="avm_folder_details" context="#{FolderDetailsBean.avmNode}" verticalSpacing="3" style="white-space:nowrap" />
+         <r:actions id="actions_doc" value="folder_details" context="#{FolderDetailsBean.folder}" verticalSpacing="3" style="white-space:nowrap" />
       </a:panel><f:verbatim>
       </td>
    </tr>

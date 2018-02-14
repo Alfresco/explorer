@@ -24,7 +24,6 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.model.WCMAppModel;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -41,7 +40,6 @@ public class EditContentWizard extends CreateContentWizard
    private static final long serialVersionUID = 1640754719164511019L;
    
    private NodeRef nodeRef;
-   private Form form;
 
    // ------------------------------------------------------------------------------
    // Wizard implementation
@@ -57,16 +55,6 @@ public class EditContentWizard extends CreateContentWizard
          throw new IllegalArgumentException("Edit Form wizard requires action node context.");
       }
       this.nodeRef = node.getNodeRef();
-      try
-      {
-         formName = (String)getNodeService().getProperty(nodeRef, WCMAppModel.PROP_PARENT_FORM_NAME); // getFormName() ...
-         form = formsService.getForm(this.formName);
-      }
-      catch (FormNotFoundException fnfe)
-      {
-         Utils.addErrorMessage(fnfe.getMessage(), fnfe);
-         throw new IllegalArgumentException(fnfe);
-      }
 
       this.content = this.getContentService().getReader(nodeRef, ContentModel.PROP_CONTENT).getContentString();
       
@@ -91,11 +79,5 @@ public class EditContentWizard extends CreateContentWizard
    protected String doPostCommitProcessing(FacesContext context, String outcome)
    {
       return outcome;
-   }
-
-   @Override 
-   public Form getForm()
-   {
-      return this.form;
    }
 }

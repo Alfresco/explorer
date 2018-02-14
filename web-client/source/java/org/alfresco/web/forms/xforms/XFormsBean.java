@@ -37,19 +37,16 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.alfresco.repo.avm.AVMNodeConverter;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.util.Pair;
+import org.alfresco.util.XMLUtil;
 import org.alfresco.web.app.Application;
 import org.alfresco.web.app.servlet.FacesHelper;
+import org.alfresco.web.bean.BrowseBean;
 import org.alfresco.web.bean.NavigationBean;
 import org.alfresco.web.bean.repository.Repository;
-import org.alfresco.web.bean.wcm.AVMBrowseBean;
-import org.alfresco.web.bean.wcm.AVMNode;
-import org.alfresco.web.bean.wcm.AVMUtil;
 import org.alfresco.web.forms.Form;
 import org.alfresco.web.forms.FormProcessor;
-import org.alfresco.util.XMLUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.xs.XSModel;
@@ -189,7 +186,7 @@ public class XFormsBean implements Serializable
 
    private XFormsSession xformsSession;
    private transient Schema2XFormsProperties schema2XFormsProperties;
-   private AVMBrowseBean avmBrowseBean;
+   private BrowseBean browseBean;
    private NavigationBean navigator;
    // lock for XFormSession.eventLog
    private ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
@@ -226,11 +223,11 @@ public class XFormsBean implements Serializable
    }
 
    /**
-    * @param avmBrowseBean the avmBrowseBean to set.
+    * @param browseBean the browseBean to set.
     */
-   public void setAvmBrowseBean(final AVMBrowseBean avmBrowseBean)
+   public void setBrowseBean(final BrowseBean browseBean)
    {
-      this.avmBrowseBean = avmBrowseBean;
+      this.browseBean = browseBean;
    }
    
    public void setNavigator(final NavigationBean navigator)
@@ -687,13 +684,11 @@ public class XFormsBean implements Serializable
                
                if (uri.contains("${storeid}"))
                {
-                  final String storeId = AVMUtil.getStoreName(cwdAvmPath);
-                  rewrittenURI         = uri.replace("${storeid}", storeId);
+            	   // FIXME
                }
                else if (uri.contains("{storeid}"))
                {
-                  final String storeId = AVMUtil.getStoreName(cwdAvmPath);
-                  rewrittenURI         = uri.replace("{storeid}", storeId);
+            	   // FIXME
                }
                else
                {
@@ -725,15 +720,6 @@ public class XFormsBean implements Serializable
                
                if (LOGGER.isDebugEnabled())
                   LOGGER.debug("Final URI " + finalURI);
-            }
-            else
-            {
-               // It's a web project asset include / import
-               final String baseURI = (uri.charAt(0) == '/'
-                                       ? AVMUtil.getPreviewURI(AVMUtil.getStoreName(cwdAvmPath))
-                                       : AVMUtil.getPreviewURI(cwdAvmPath));
-
-               finalURI = baseURI + uri;
             }
 
             if (LOGGER.isDebugEnabled())
@@ -851,15 +837,7 @@ public class XFormsBean implements Serializable
    private Pair<Document, XSModel> getXFormsDocument()
       throws FormBuilderException
    {
-      String path = null;
-      if (this.getXformsSession().getForm().isWebForm())
-      {
-         path = this.getCurrentAVMPath();
-      }
-      else
-      {
-         path = this.getCurrentPath();
-      }
+      String path = this.getCurrentPath();
       
       if (LOGGER.isDebugEnabled())
       {
@@ -897,18 +875,6 @@ public class XFormsBean implements Serializable
       {
          throw new FormBuilderException(saxe);
       }
-   }
-
-   private String getCurrentAVMPath()
-   {
-      AVMNode node = this.avmBrowseBean.getAvmActionNode();
-      if (node == null)
-      {
-         return this.avmBrowseBean.getCurrentPath();
-      }
-
-      final String result = node.getPath();
-      return node.isDirectory() ? result : AVMNodeConverter.SplitBase(result)[0];
    }
    
    private String getCurrentPath()
