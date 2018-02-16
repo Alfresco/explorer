@@ -138,4 +138,29 @@
       </property>
    </bean>
 
+
+   <bean id="AuthenticationFilter" class="org.alfresco.repo.management.subsystems.ChainingSubsystemProxyFactory">
+      <property name="applicationContextManager">
+         <ref bean="Authentication" />
+      </property>
+      <property name="interfaces">
+         <list>
+            <value>org.alfresco.repo.web.filter.beans.DependencyInjectedFilter</value>
+         </list>
+      </property>
+      <property name="sourceBeanName">
+         <value>authenticationFilter</value>
+      </property>
+      <!-- Fall back to the default alfresco implementation -->
+      <property name="defaultTarget">
+         <ref bean="defaultAuthenticationFilter"/>
+      </property>
+   </bean>
+
+   <bean id="defaultAuthenticationFilter" class="org.alfresco.web.app.servlet.AuthenticationFilter">
+      <property name="configService">
+         <ref bean="webClientConfigService" />
+      </property>
+</bean>
+
 </beans>

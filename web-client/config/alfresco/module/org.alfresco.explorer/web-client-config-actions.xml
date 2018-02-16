@@ -984,7 +984,6 @@
          <!-- Actions Menu for Create in Browse screen -->
          <action-group id="browse_create_menu">
             <action idref="create_content" />
-            <action idref="create_web_form" />
             <action idref="create_space" />
             <action idref="create_space_wizard" />
          </action-group>
@@ -999,7 +998,6 @@
             <action idref="import_space" />
             <action idref="manage_space_users" />
             <action idref="manage_space_rules" />
-            <action idref="regenerate_renditions" />
             <!-- NOTE: now found on the User Console
             <action idref="manage_deleted_items" />-->
          </action-group>

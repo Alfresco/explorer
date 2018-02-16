@@ -42,10 +42,7 @@
         <fileSet>
             <directory>source/web</directory>
             <outputDirectory>web</outputDirectory>
-            <filtered>true</filtered> <!-- Will filter files and substitute POM props such as for example ${project.name} -->
-            <excludes>
-                <exclude>README.md</exclude>
-            </excludes>
+            <filtered>false</filtered> <!-- Will filter files and substitute POM props such as for example ${project.name} -->
         </fileSet>
     </fileSets>
 
