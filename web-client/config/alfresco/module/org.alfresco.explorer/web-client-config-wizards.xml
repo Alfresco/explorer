@@ -187,12 +187,6 @@
                      instruction-id="default_instruction" />
             </step>
             <step name="content" title-id="enter_content" description-id="create_content_step2_desc">
-               <condition if="#{CreateContentWizard.formName != ''}">
-                  <page path="/jsp/content/create-content-wizard/create-form.jsp"
-                     title-id="create_content_step2_title"
-                     description-id="create_content_step2_desc"
-                     instruction-id="default_instruction" />
-               </condition>
                <condition if="#{CreateContentWizard.mimeType == 'text/xml'}">
                   <page path="/jsp/content/create-content-wizard/create-xml.jsp"
                         title-id="create_content_step2_title"
@@ -226,13 +220,6 @@
             <step name="content"
                  title-id="create_web_content_enter_content_title"
                  description-id="create_content_step2_desc">
-               <!--  JanV -->
-               <condition if="#{EditContentWizard.formName != ''}">
-                  <page path="/jsp/content/create-content-wizard/create-form.jsp"
-                     title-id="create_content_step2_title"
-                     description-id="create_content_step2_desc"
-                     instruction-id="default_instruction" />
-               </condition>
                <condition if="#{EditContentWizard.mimeType == 'text/xml'}">
                   <page path="/jsp/content/create-content-wizard/create-xml.jsp"
                         title-id="edit_web_content_enter_content_step_title"
