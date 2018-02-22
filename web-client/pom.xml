@@ -13,10 +13,6 @@
 		<alfresco.groupId>org.alfresco</alfresco.groupId>
 		<maven.alfresco.edition>community</maven.alfresco.edition>
 		
-		<alfresco.platform.version>5.0.d</alfresco.platform.version>
-		<alfresco.platform.version.min>5.0</alfresco.platform.version.min>
-		<alfresco.platform.version.max>5.2.999999</alfresco.platform.version.max>
-		
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
@@ -50,10 +46,43 @@
 		</dependency>
 		<dependency>
 			<groupId>${alfresco.groupId}</groupId>
-			<artifactId>alfresco-core</artifactId>
+			<artifactId>alfresco-repository</artifactId>
 			<version>${alfresco.platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${alfresco.groupId}</groupId>
+			<artifactId>alfresco-remote-api</artifactId>
+			<version>${alfresco.platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${alfresco.groupId}</groupId>
+			<artifactId>alfresco-core</artifactId>
+			<version>${alfresco.core.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.core</groupId>
+			<artifactId>myfaces-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.core</groupId>
+			<artifactId>myfaces-impl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>fop</artifactId>
+			<version>0.94</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-jxpath</groupId>
+			<artifactId>commons-jxpath</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 		<!-- Tomcat/Jetty already have these libraries, so they are "provided" -->
@@ -111,7 +140,7 @@
 	   						<phase>package</phase>
 	   						<goals><goal>single</goal></goals>
 	   						<configuration>
-	   							<appendAssemblyId>false</appendAssemblyId>
+	   							<appendAssemblyId>true</appendAssemblyId>
 	   							<descriptor>source/assembly/amp.xml</descriptor>
 	   						</configuration>
 	   					</execution>
@@ -139,7 +168,66 @@
    				<groupId>org.apache.maven.plugins</groupId>
    				<artifactId>maven-assembly-plugin</artifactId>
    			</plugin>
+<!--
+	   		<plugin>
+	   			<groupId>org.codehaus.mojo</groupId>
+	   			<artifactId>build-helper-maven-plugin</artifactId>
+	   			<version>3.0.0</version>
+	   			<executions>
+	   				<execution>
+	   					<id>add-resource</id>
+	   					<phase>generate-resources</phase>
+	   					<goals><goal>add-resource</goal></goals>
+	   					<configuration>
+	   						<resources>
+	   							<resource>
+	   								<directory>source/alf-${alfresco.version.min}/config</directory>
+	   								<filtering>true</filtering>
+	   							</resource>
+	   						</resources>
+	   					</configuration>
+	   				</execution>
+	   			</executions>
+	   		</plugin>
+-->
 	   	</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>alf50</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<alfresco.platform.version>5.0.d</alfresco.platform.version>
+				<alfresco.version.classifer>alf50</alfresco.version.classifer>
+				<alfresco.version.min>5.0</alfresco.version.min>
+				<alfresco.version.max>5.0.999.999</alfresco.version.max>
+				<alfresco.core.version>5.0.d</alfresco.core.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>alf51</id>
+			<properties>
+				<alfresco.platform.version>5.1.g</alfresco.platform.version>
+				<alfresco.version.classifer>alf51</alfresco.version.classifer>
+				<alfresco.version.min>5.1</alfresco.version.min>
+				<alfresco.version.max>5.1.999.999</alfresco.version.max>
+				<alfresco.core.version>6.1.2.3</alfresco.core.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>alf52</id>
+			<properties>
+				<alfresco.platform.version>5.2.f</alfresco.platform.version>
+				<alfresco.version.classifer>alf52</alfresco.version.classifer>
+				<alfresco.version.min>5.2</alfresco.version.min>
+				<alfresco.version.max>5.2.999.999</alfresco.version.max>
+				<alfresco.core.version>6.14</alfresco.core.version>
+			</properties>
+		</profile>
+	</profiles>
+	
 	
 </project>

@@ -16,7 +16,7 @@
         </moduleDependency>
     -->
 
-    <id>amp</id>
+    <id>${alfresco.version.classifer}</id>
 
     <formats>
         <format>amp</format>
@@ -43,6 +43,11 @@
             <directory>source/web</directory>
             <outputDirectory>web</outputDirectory>
             <filtered>false</filtered> <!-- Will filter files and substitute POM props such as for example ${project.name} -->
+        </fileSet>
+        <fileSet>
+            <directory>source/alf-${alfresco.version.min}/web</directory>
+            <outputDirectory>web</outputDirectory>
+            <filtered>false</filtered>
         </fileSet>
     </fileSets>
 
