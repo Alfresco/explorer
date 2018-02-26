@@ -26,6 +26,22 @@ Notes
 * Removed the WCM references in the source
 * Merged web.xml for v5.0, v5.1, and v5.2 builds
 
+Build
+-----
+```sh
+git clone https://github.com/Alfresco/explorer.git
+cd explorer/web-client
+mvn -Palf50 clean install
+mvn -Palf51 clean install
+mvn -Palf52 clean install
+```
+
+Installation
+------------
+Use the AMP from `.m2/repository/org/alfresco/explorer/VERSION/explorer-VERSION-alf5X.amp`.  If you build your own WAR, include that AMP in your build.  If you place AMPs in the environment's `amps` and `amps_share` directories, place the AMP in the `amps` directory.  Unfortunately, you must install the AMP using the `-force` flag.  This is required because Explorer requires web.xml changes.  This should be the only file replaced by use of the `-force` flag.
+
+The AMP has a module.properties that restricts installation to the correct versions of Alfresco.  The build with classifier `alf51` will not install on Alfresco v5.0 or v5.2.  The versions are specific to the major/minor version due to the `web.xml` modifications.  In the future, it could be source related reasons and not just `web.xml`.
+
 TODO
 ----
 * List on addons.alfresco.com
